@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+
+  hub:
+   image: selenium/hub:3.141.59-20200515
+   ports:
+    - "4444:4444"
+
+  selenium1:
+    image: selenium/node-chrome:3.141.59-20200515
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+      NODE_MAX_INSTANCES: 1
+      NODE_MAX_SESSION: 1
+  test:
+    build:
+      context: .
+    volumes:
+      - ./Instagram-Bot:/Instagram-Bot
+    command: sh -c "sleep 10 && python3 main.py name"
+    depends_on:
+      - selenium1
